@@ -4,6 +4,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import Login from "./views/Login";
+import SignUp from "./views/SignUp";
 import {
   StyleSheet,
   Text,
@@ -36,6 +37,11 @@ export default function App() {
           name="Login"
           component={Login}
           options={{ title: "Login" }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{ title: "Cadastro" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -36,7 +36,10 @@ const Login = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
         <Text style={[styles.texto, styles.noAccount]}>
-          Não tem uma conta? <Text style={styles.textoSpan}>Cadastre-se</Text>
+          Não tem uma conta?
+          <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+            <Text style={styles.textoSpan}>Cadastre-se</Text>
+          </TouchableOpacity>
         </Text>
       </View>
     </View>
