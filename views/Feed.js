@@ -18,7 +18,7 @@ const Feed = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.content}></View>
       </ScrollView>
-      <Footer />
+      <Footer navigation={navigation} />
     </View>
   );
 };

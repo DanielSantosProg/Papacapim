@@ -4,10 +4,13 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 const Header = ({ navigation }) => {
   return (
     <View style={styles.headerContainer}>
-      <Image
-        source={require("../assets/imgs/user_icon.png")}
-        style={styles.profileImage}
-      />
+      <TouchableOpacity onPress={() => navigation.navigate("UserProfile")}>
+        <Image
+          source={require("../assets/imgs/user_icon.png")}
+          style={styles.profileImage}
+        />
+      </TouchableOpacity>
+
       <Text style={styles.headerText}>PAPACAPIM</Text>
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Image

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
 import Feed from "./views/Feed";
+import UserProfile from "./views/UserProfile";
 import { StyleSheet } from "react-native";
 
 export default function App() {
@@ -42,6 +43,11 @@ export default function App() {
           name="Feed"
           component={Feed}
           options={{ title: "Feed" }}
+        />
+        <Stack.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={{ title: "Perfil" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

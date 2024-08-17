@@ -38,12 +38,15 @@ const Login = ({ navigation }) => {
             Esqueceu a Senha?
           </Text>
         </TouchableOpacity>
-        <Text style={[styles.texto, styles.noAccount]}>
-          Não tem uma conta?
+        <View style={styles.noAccount}>
+          <Text style={styles.textoBottom}>Não tem uma conta?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-            <Text style={styles.textoSpan}>Cadastre-se</Text>
+            <Text style={[styles.textoBottom, styles.textoSpan]}>
+              {" "}
+              Cadastre-se
+            </Text>
           </TouchableOpacity>
-        </Text>
+        </View>
       </View>
     </View>
   );
@@ -66,6 +69,11 @@ const styles = StyleSheet.create({
     color: "#EEE",
     fontFamily: "Kameron-Regular",
     fontSize: 20,
+  },
+  textoBottom: {
+    color: "#EEE",
+    fontFamily: "Kameron-Regular",
+    fontSize: 16,
   },
   textoSpan: {
     color: "#76ABAE",
@@ -113,9 +121,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   noAccount: {
+    flexDirection: "row",
+    alignItems: "center",
     top: 15,
-    fontSize: 16,
-    alignSelf: "center",
+    justifyContent: "center",
   },
 });
 
