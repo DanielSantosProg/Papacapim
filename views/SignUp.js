@@ -169,7 +169,10 @@ const SignUp = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttons}>
-        <TouchableOpacity style={[styles.touchable, styles.signupBut]}>
+        <TouchableOpacity
+          style={[styles.touchable, styles.signupBut]}
+          onPress={() => navigation.navigate("Feed")}
+        >
           <Text style={styles.textoBold}>Criar conta</Text>
         </TouchableOpacity>
       </View>

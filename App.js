@@ -5,13 +5,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import Feed from "./views/Feed";
+import { StyleSheet } from "react-native";
 
 export default function App() {
   Stack = createNativeStackNavigator();
@@ -42,6 +37,11 @@ export default function App() {
           name="SignUp"
           component={SignUp}
           options={{ title: "Cadastro" }}
+        />
+        <Stack.Screen
+          name="Feed"
+          component={Feed}
+          options={{ title: "Feed" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -27,7 +27,10 @@ const Login = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttons}>
-        <TouchableOpacity style={[styles.touchable, styles.loginBut]}>
+        <TouchableOpacity
+          style={[styles.touchable, styles.loginBut]}
+          onPress={() => navigation.navigate("Feed")}
+        >
           <Text style={styles.textoBold}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.touchable, styles.forgotPassword]}>
