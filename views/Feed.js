@@ -2,7 +2,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -18,6 +17,12 @@ const Feed = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.content}></View>
       </ScrollView>
+      <TouchableOpacity
+        style={styles.postButton}
+        onPress={() => navigation.navigate("Post")}
+      >
+        <Text style={[styles.texto, styles.buttonText]}>+</Text>
+      </TouchableOpacity>
       <Footer navigation={navigation} />
     </View>
   );
@@ -67,19 +72,24 @@ const styles = StyleSheet.create({
   inputs: {
     bottom: 30,
   },
-  touchable: {
+  postButton: {
     marginBottom: 10,
     justifyContent: "center",
     alignItems: "center",
-    width: 300,
-    height: 50,
+    width: 60,
+    height: 60,
+    backgroundColor: "#76ABAE",
+    borderRadius: 30,
+    position: "absolute",
+    right: 40,
+    bottom: 80,
+  },
+  buttonText: {
+    fontSize: 32,
+    fontFamily: "Kameron-Bold",
   },
   buttons: {
     top: 25,
-  },
-  loginBut: {
-    backgroundColor: "#76ABAE",
-    borderRadius: 30,
   },
   forgotPassword: {
     borderColor: "#EEE",

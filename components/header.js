@@ -12,7 +12,7 @@ const Header = ({ navigation }) => {
       </TouchableOpacity>
 
       <Text style={styles.headerText}>PAPACAPIM</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+      <TouchableOpacity onPress={() => navigation.navigate("AccountSettings")}>
         <Image
           source={require("../assets/imgs/menu_vertical.png")}
           style={styles.icon}

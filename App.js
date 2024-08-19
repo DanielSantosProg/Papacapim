@@ -8,6 +8,8 @@ import SignUp from "./views/SignUp";
 import Feed from "./views/Feed";
 import UserProfile from "./views/UserProfile";
 import { StyleSheet } from "react-native";
+import AccountSettings from "./views/AccountSettings";
+import Post from "./views/Post";
 
 export default function App() {
   Stack = createNativeStackNavigator();
@@ -48,6 +50,16 @@ export default function App() {
           name="UserProfile"
           component={UserProfile}
           options={{ title: "Perfil" }}
+        />
+        <Stack.Screen
+          name="AccountSettings"
+          component={AccountSettings}
+          options={{ title: "Configurações da conta" }}
+        />
+        <Stack.Screen
+          name="Post"
+          component={Post}
+          options={{ title: "Postagem" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
