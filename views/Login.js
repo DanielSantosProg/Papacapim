@@ -12,10 +12,10 @@ const Login = ({ navigation }) => {
       <Text style={[styles.textoBold, styles.logo]}>PAPACAPIM</Text>
       <Text style={[styles.texto, styles.header]}>Entre no Papacapim</Text>
       <View style={styles.inputs}>
-        <Text style={styles.texto}>Usuário</Text>
+        <Text style={styles.texto}>Email</Text>
         <TextInput
           style={styles.input}
-          placeholder="Digite o nome do usuário"
+          placeholder="Digite o seu email"
           placeholderTextColor="gray"
         />
         <Text style={styles.texto}>Senha</Text>

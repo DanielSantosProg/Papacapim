@@ -7,8 +7,20 @@ import {
 } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useState, useEffect } from "react";
+import { createUser } from "../ApiController";
 
 const SignUp = ({ navigation }) => {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [email, setEmail] = useState("");
+  const [dateofbirth, setDateofbirth] = useState("");
+
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(null);
+
   const months = [
     { title: "Jan" },
     { title: "Fev" },
@@ -24,29 +36,69 @@ const SignUp = ({ navigation }) => {
     { title: "Dez" },
   ];
   const days = [];
-  for (let i = 1; i <= 30; i++) {
+  for (let i = 1; i <= 31; i++) {
     days.push({ day: i });
   }
   const years = [];
   for (let i = 1920; i <= 2024; i++) {
     years.push({ year: i });
   }
+
+  const signUp = async () => {
+    try {
+      if (
+        name !== "" &&
+        password !== "" &&
+        confirm !== "" &&
+        email !== "" &&
+        password === confirm
+      ) {
+        const userData = {
+          login: email,
+          name: name,
+          password: password,
+          confirmPassword: confirm,
+        };
+
+        const response = await createUser(userData);
+        console.log("Usuário criado com sucesso:", response);
+        navigation.navigate("Login");
+      } else {
+        console.log("Preencha todos os campos e verifique as senhas.");
+      }
+    } catch (error) {
+      console.log("Erro no cadastro:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedDay && selectedMonth && selectedYear) {
+      const date = `${selectedDay}/${selectedMonth}/${selectedYear}`;
+      setDateofbirth(date);
+      console.log("Date of Birth:", date);
+    }
+  }, [selectedDay, selectedMonth, selectedYear]);
+
   return (
     <View style={styles.container}>
       <Text style={[styles.textoBold, styles.logo]}>PAPACAPIM</Text>
       <Text style={[styles.texto, styles.header]}>Crie sua conta</Text>
       <View style={styles.inputs}>
-        <Text style={styles.texto}>Usuário</Text>
+        <Text style={styles.texto}>Nome de Usuário</Text>
         <TextInput
           style={styles.input}
           placeholder="Digite o nome do usuário"
           placeholderTextColor="gray"
+          value={name}
+          onChangeText={setName}
         />
         <Text style={styles.texto}>Email</Text>
         <TextInput
           style={styles.input}
           placeholder="Digite o email"
           placeholderTextColor="gray"
+          value={email}
+          onChangeText={setEmail}
         />
         <Text style={styles.texto}>Senha</Text>
         <TextInput
@@ -54,6 +106,8 @@ const SignUp = ({ navigation }) => {
           secureTextEntry={true}
           placeholder="Digite a sua senha"
           placeholderTextColor="gray"
+          value={password}
+          onChangeText={setPassword}
         />
         <Text style={styles.texto}>Confirme a senha</Text>
         <TextInput
@@ -61,15 +115,15 @@ const SignUp = ({ navigation }) => {
           secureTextEntry={true}
           placeholder="Digite novamente a senha"
           placeholderTextColor="gray"
+          value={confirm}
+          onChangeText={setConfirm}
         />
         <Text style={styles.texto}>Data de nascimento</Text>
       </View>
       <View style={styles.dateInputs}>
         <SelectDropdown
           data={months}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index);
-          }}
+          onSelect={(selectedItem) => setSelectedMonth(selectedItem.title)}
           renderButton={(selectedItem, isOpened) => {
             return (
               <View style={styles.dropdownButtonStyle}>
@@ -101,9 +155,7 @@ const SignUp = ({ navigation }) => {
         />
         <SelectDropdown
           data={days}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index);
-          }}
+          onSelect={(selectedItem) => setSelectedDay(selectedItem.day)}
           renderButton={(selectedItem, isOpened) => {
             return (
               <View style={styles.dropdownButtonStyle}>
@@ -135,9 +187,7 @@ const SignUp = ({ navigation }) => {
         />
         <SelectDropdown
           data={years}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index);
-          }}
+          onSelect={(selectedItem) => setSelectedYear(selectedItem.year)}
           renderButton={(selectedItem, isOpened) => {
             return (
               <View style={styles.dropdownButtonStyle}>
@@ -171,7 +221,7 @@ const SignUp = ({ navigation }) => {
       <View style={styles.buttons}>
         <TouchableOpacity
           style={[styles.touchable, styles.signupBut]}
-          onPress={() => navigation.navigate("Feed")}
+          onPress={signUp}
         >
           <Text style={styles.textoBold}>Criar conta</Text>
         </TouchableOpacity>
@@ -211,6 +261,7 @@ const styles = StyleSheet.create({
   },
   input: {
     marginTop: 5,
+    color: "#FFF",
     marginBottom: 15,
     borderColor: "#FFF",
     borderWidth: 0.3,
