@@ -9,7 +9,11 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function AccountSettings({ navigation }) {
+export default function AccountSettings(props) {
+  const [username, setUsername] = useState("user123");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [email, setEmail] = useState("user123@teste.com");
   const [isUsernameVisible, setIsUsernameVisible] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isEmailVisible, setIsEmailVisible] = useState(false);
@@ -17,7 +21,7 @@ export default function AccountSettings({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Alterar dados da conta</Text>
-      <Text style={styles.username}>@user123</Text>
+      <Text style={styles.username}>@{username}</Text>
 
       <TouchableOpacity
         style={styles.sectionHeader}
@@ -37,6 +41,7 @@ export default function AccountSettings({ navigation }) {
             style={styles.input}
             placeholder="Nome de usuário"
             placeholderTextColor="#ccc"
+            onChangeText={setUsername}
           />
         </View>
       )}
@@ -60,6 +65,8 @@ export default function AccountSettings({ navigation }) {
             secureTextEntry
             placeholder="Nova senha"
             placeholderTextColor="#ccc"
+            value={password}
+            onChangeText={setPassword}
           />
           <Text style={styles.label}>Digite a senha novamente:</Text>
           <TextInput
@@ -67,6 +74,8 @@ export default function AccountSettings({ navigation }) {
             secureTextEntry
             placeholder="Confirmar senha"
             placeholderTextColor="#ccc"
+            value={confirm}
+            onChangeText={setConfirm}
           />
         </View>
       )}
@@ -89,6 +98,8 @@ export default function AccountSettings({ navigation }) {
             style={styles.input}
             placeholder="Email"
             placeholderTextColor="#ccc"
+            value={email}
+            onChangeText={setEmail}
           />
         </View>
       )}
@@ -96,7 +107,7 @@ export default function AccountSettings({ navigation }) {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          navigation.goBack();
+          props.navigation.goBack();
         }}
       >
         <Text style={styles.buttonText}>Confirmar Alterações</Text>

@@ -14,7 +14,6 @@ const Post = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Go Back Button */}
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.goBackContainer}

@@ -5,8 +5,32 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useState } from "react";
+import { loginUser } from "../ApiController";
 
 const Login = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const login = async () => {
+    try {
+      if (email !== "" && password !== "") {
+        const userData = {
+          login: email,
+          password: password,
+        };
+
+        const response = await loginUser(userData);
+        console.log("Login feito com sucesso:", response);
+        navigation.navigate("Feed");
+      } else {
+        console.log("Verifique que os campos estão preenchidos corretamente.");
+        Alert.alert("Verifique que os campos estão preenchidos corretamente.");
+      }
+    } catch (error) {
+      console.log("Erro no cadastro:", error);
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={[styles.textoBold, styles.logo]}>PAPACAPIM</Text>
@@ -17,6 +41,8 @@ const Login = ({ navigation }) => {
           style={styles.input}
           placeholder="Digite o seu email"
           placeholderTextColor="gray"
+          value={email}
+          onChangeText={setEmail}
         />
         <Text style={styles.texto}>Senha</Text>
         <TextInput
@@ -24,6 +50,8 @@ const Login = ({ navigation }) => {
           secureTextEntry={true}
           placeholder="Digite a sua senha"
           placeholderTextColor="gray"
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
       <View style={styles.buttons}>
@@ -88,6 +116,7 @@ const styles = StyleSheet.create({
   input: {
     marginTop: 5,
     marginBottom: 15,
+    color: "#FFF",
     borderColor: "#FFF",
     borderWidth: 0.3,
     borderRadius: 4,

@@ -68,11 +68,11 @@ const loginUser = async (userData) => {
   try {
     const response = await requestUsingToken("sessions", "post", userData);
 
-    const { id, token, userLogin } = response.data;
+    const { id, token, user_login } = response.data;
 
     await AsyncStorage.setItem("sessionId", id.toString());
     await AsyncStorage.setItem("sessionToken", token);
-    await AsyncStorage.setItem("userLogin", userLogin);
+    await AsyncStorage.setItem("user_login", user_login);
 
     return response.data;
   } catch (error) {

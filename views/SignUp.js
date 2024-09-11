@@ -4,10 +4,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
-import SelectDropdown from "react-native-select-dropdown";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createUser } from "../ApiController";
 
 const SignUp = ({ navigation }) => {
@@ -15,34 +14,6 @@ const SignUp = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [email, setEmail] = useState("");
-  const [dateofbirth, setDateofbirth] = useState("");
-
-  const [selectedDay, setSelectedDay] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
-
-  const months = [
-    { title: "Jan" },
-    { title: "Fev" },
-    { title: "Mar" },
-    { title: "Abr" },
-    { title: "Mai" },
-    { title: "Jun" },
-    { title: "Jul" },
-    { title: "Ago" },
-    { title: "Set" },
-    { title: "Out" },
-    { title: "Nov" },
-    { title: "Dez" },
-  ];
-  const days = [];
-  for (let i = 1; i <= 31; i++) {
-    days.push({ day: i });
-  }
-  const years = [];
-  for (let i = 1920; i <= 2024; i++) {
-    years.push({ year: i });
-  }
 
   const signUp = async () => {
     try {
@@ -62,22 +33,16 @@ const SignUp = ({ navigation }) => {
 
         const response = await createUser(userData);
         console.log("Usuário criado com sucesso:", response);
+        Alert.alert("Usuário criado com sucesso:", response);
         navigation.navigate("Login");
       } else {
         console.log("Preencha todos os campos e verifique as senhas.");
+        Alert.alert("Preencha todos os campos e verifique as senhas.");
       }
     } catch (error) {
       console.log("Erro no cadastro:", error);
     }
   };
-
-  useEffect(() => {
-    if (selectedDay && selectedMonth && selectedYear) {
-      const date = `${selectedDay}/${selectedMonth}/${selectedYear}`;
-      setDateofbirth(date);
-      console.log("Date of Birth:", date);
-    }
-  }, [selectedDay, selectedMonth, selectedYear]);
 
   return (
     <View style={styles.container}>
@@ -117,105 +82,6 @@ const SignUp = ({ navigation }) => {
           placeholderTextColor="gray"
           value={confirm}
           onChangeText={setConfirm}
-        />
-        <Text style={styles.texto}>Data de nascimento</Text>
-      </View>
-      <View style={styles.dateInputs}>
-        <SelectDropdown
-          data={months}
-          onSelect={(selectedItem) => setSelectedMonth(selectedItem.title)}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.dropdownButtonStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(selectedItem && selectedItem.title) || "Mês"}
-                </Text>
-                <Icon
-                  name={isOpened ? "chevron-up" : "chevron-down"}
-                  style={styles.dropdownButtonArrowStyle}
-                />
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && { backgroundColor: "#D2D9DF" }),
-                }}
-              >
-                <Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-                <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-          dropdownStyle={styles.dropdownMenuStyle}
-        />
-        <SelectDropdown
-          data={days}
-          onSelect={(selectedItem) => setSelectedDay(selectedItem.day)}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.dropdownButtonStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(selectedItem && selectedItem.day) || "Dia"}
-                </Text>
-                <Icon
-                  name={isOpened ? "chevron-up" : "chevron-down"}
-                  style={styles.dropdownButtonArrowStyle}
-                />
-              </View>
-            );
-          }}
-          renderItem={(item, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && { backgroundColor: "#EEE" }),
-                }}
-              >
-                <Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-                <Text style={styles.dropdownItemTxtStyle}>{item.day}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-          dropdownStyle={styles.dropdownMenuStyle}
-        />
-        <SelectDropdown
-          data={years}
-          onSelect={(selectedItem) => setSelectedYear(selectedItem.year)}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.dropdownButtonStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(selectedItem && selectedItem.year) || "Ano"}
-                </Text>
-                <Icon
-                  name={isOpened ? "chevron-up" : "chevron-down"}
-                  style={styles.dropdownButtonArrowStyle}
-                />
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && { backgroundColor: "#D2D9DF" }),
-                }}
-              >
-                <Icon name={item.icon} style={styles.dropdownItemIconStyle} />
-                <Text style={styles.dropdownItemTxtStyle}>{item.year}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-          dropdownStyle={styles.dropdownMenuStyle}
         />
       </View>
       <View style={styles.buttons}>

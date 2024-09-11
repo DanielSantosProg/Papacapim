@@ -8,14 +8,44 @@ import {
 import Header from "../components/header";
 import Tabs from "../components/tabs";
 import Footer from "../components/footer";
+import Post from "../components/post";
 
 const Feed = ({ navigation }) => {
+  const posts = [
+    {
+      user: "randomUser1",
+      message:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In euismod accumsan sem, sit amet viverra nisi facilisis ut. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    },
+    {
+      user: "randomUser2",
+      message:
+        "Pellentesque in sodales dui. Aliquam euismod elit sed urna viverra, ut tincidunt nunc pharetra.",
+    },
+    {
+      user: "randomUser3",
+      message:
+        "Quisque ex libero, dictum et dui eu, tempor sagittis nunc. Quisque scelerisque id mi eget porta.",
+    },
+    {
+      user: "randomUser4",
+      message:
+        "Nunc posuere a lacus in varius. Phasellus dignissim dapibus nisl vel sodales.",
+    },
+    {
+      user: "randomUser5",
+      message:
+        "Etiam eu cursus tellus. Nulla gravida velit sit amet leo congue, in lacinia mi sollicitudin.",
+    },
+  ];
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
       <Tabs />
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View style={styles.content}></View>
+        {posts.map((post, index) => (
+          <Post key={index} user={post.user} message={post.message} />
+        ))}
       </ScrollView>
       <TouchableOpacity
         style={styles.postButton}
