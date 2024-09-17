@@ -3,13 +3,17 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { StyleSheet } from "react-native";
+
+// imports das views
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
 import Feed from "./views/Feed";
 import UserProfile from "./views/UserProfile";
-import { StyleSheet } from "react-native";
 import AccountSettings from "./views/AccountSettings";
 import Post from "./views/Post";
+import Profile from "./views/Profile";
+import Search from "./views/Search";
 
 export default function App() {
   Stack = createNativeStackNavigator();
@@ -49,6 +53,11 @@ export default function App() {
         <Stack.Screen
           name="UserProfile"
           component={UserProfile}
+          options={{ title: "PerfilUsuario" }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
           options={{ title: "Perfil" }}
         />
         <Stack.Screen
@@ -60,6 +69,11 @@ export default function App() {
           name="Post"
           component={Post}
           options={{ title: "Postagem" }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={Search}
+          options={{ title: "Busca" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

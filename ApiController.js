@@ -108,8 +108,22 @@ const getAllUsers = async () => {
     const response = await requestUsingToken("/users");
     return response;
   } catch (error) {
-    console.error("Erro ao achar usuários: ", error);
-    throw error;
+    console.error(
+      "Erro ao procurar usuários:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
+const searchUser = async (user) => {
+  try {
+    const response = await requestUsingToken(`/users/${user}`);
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar usuários:",
+      error.response ? error.response.data : error.message
+    );
   }
 };
 
@@ -139,4 +153,5 @@ module.exports = {
   getCurrentUser,
   changeUserSettings,
   deleteUser,
+  searchUser,
 };

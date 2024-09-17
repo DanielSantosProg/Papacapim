@@ -1,7 +1,28 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { getCurrentUser } from "../ApiController";
 
 const ProfileHeader = ({ navigation }) => {
+  const [username, setUsername] = useState("");
+
+  const getUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      console.log("Usuário: ", user);
+      setUsername(user.name);
+    } catch (error) {
+      console.log(
+        "Usuário não encontrado: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -12,7 +33,7 @@ const ProfileHeader = ({ navigation }) => {
       </TouchableOpacity>
 
       <View style={styles.textContainer}>
-        <Text style={styles.headerUsername}>User123</Text>
+        <Text style={styles.headerUsername}>{username}</Text>
         <Text style={styles.headerText}>0 posts</Text>
       </View>
     </View>

@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
 
-const Footer = ({ navigation }) => {
-  const [selectedTab, setSelectedTab] = useState("Home");
+const Footer = ({ navigation, page }) => {
+  const [selectedTab, setSelectedTab] = useState(page);
 
   return (
     <View style={styles.footerContainer}>
@@ -24,7 +24,10 @@ const Footer = ({ navigation }) => {
         />
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => setSelectedTab("Search")}
+        onPress={() => {
+          setSelectedTab("Search");
+          navigation.navigate("Search");
+        }}
         style={styles.tab}
       >
         <Image

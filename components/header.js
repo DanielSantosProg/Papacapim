@@ -11,7 +11,7 @@ const Header = ({ navigation }) => {
 
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={() => navigation.navigate("UserProfile")}>
+      <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
         <Image
           source={require("../assets/imgs/user_icon.png")}
           style={styles.profileImage}

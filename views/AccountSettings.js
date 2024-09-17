@@ -16,10 +16,13 @@ import {
 } from "../ApiController";
 
 export default function AccountSettings(props) {
+  const [newUsername, setNewUsername] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [newLogin, setNewLogin] = useState(null);
   const [login, setLogin] = useState("");
+
   const [isUsernameVisible, setIsUsernameVisible] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoginVisible, setisLoginVisible] = useState(false);
@@ -40,39 +43,38 @@ export default function AccountSettings(props) {
 
   const changeUserDetails = async () => {
     try {
-      if (username !== "" && login !== "") {
-        console.log("Username being sent:", username);
-        console.log("Login being sent:", login);
-        if (password !== "" && confirm !== "") {
-          if (password === confirm) {
-            const userData = {
-              login: login,
-              name: username,
-              password: password,
-              password_confirmation: confirm,
-            };
-            const response = await changeUserSettings(userData);
-            console.log(
-              "Usuário alterado com sucesso:",
-              JSON.stringify(response)
-            );
-            Alert.alert(
-              "Usuário alterado com sucesso:",
-              JSON.stringify(response)
-            );
-          } else {
-            console.log("Erro: Verifique se as senhas estão corretas.");
-            Alert.alert("Erro", "Verifique se as senhas estão corretas.");
-          }
-        }
+      const userData = {};
+
+      if (newUsername) {
+        userData.name = newUsername;
       } else {
-        const userData = {
-          login: login,
-          name: username,
-        };
+        userData.name = username; // mantém o valor atual se o nome de usuário não for alterado
+      }
+
+      if (newLogin) {
+        userData.login = newLogin;
+      } else {
+        userData.login = login; // mantém o valor atual se o login não for alterado
+      }
+
+      if (password !== "" && confirm !== "") {
+        if (password === confirm) {
+          userData.password = password;
+          userData.password_confirmation = confirm;
+        } else {
+          console.log("Erro: Verifique se as senhas estão corretas.");
+          Alert.alert("Erro", "Verifique se as senhas estão corretas.");
+          return; // Sai da função se as senhas não forem iguais
+        }
+      }
+
+      if (Object.keys(userData).length > 0) {
         const response = await changeUserSettings(userData);
         console.log("Usuário alterado com sucesso: ", JSON.stringify(response));
-        Alert.alert("Usuário alterado com sucesso. ");
+        Alert.alert("Usuário alterado com sucesso");
+      } else {
+        console.log("Nenhuma alteração detectada");
+        Alert.alert("Erro", "Nenhuma alteração foi detectada.");
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -179,6 +181,7 @@ export default function AccountSettings(props) {
         style={styles.button}
         onPress={() => {
           changeUserDetails();
+
           Alert.alert("Faça login novamente.");
           props.navigation.navigate("Login");
         }}

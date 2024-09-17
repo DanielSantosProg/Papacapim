@@ -53,7 +53,7 @@ const Feed = ({ navigation }) => {
       >
         <Text style={[styles.texto, styles.buttonText]}>+</Text>
       </TouchableOpacity>
-      <Footer navigation={navigation} />
+      <Footer navigation={navigation} page="Home" />
     </View>
   );
 };
