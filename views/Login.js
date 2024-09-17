@@ -9,14 +9,14 @@ import { useState } from "react";
 import { loginUser } from "../ApiController";
 
 const Login = ({ navigation }) => {
-  const [email, setEmail] = useState("");
+  const [userLogin, setUserLogin] = useState("");
   const [password, setPassword] = useState("");
 
   const login = async () => {
     try {
-      if (email !== "" && password !== "") {
+      if (userLogin !== "" && password !== "") {
         const userData = {
-          login: email,
+          login: userLogin,
           password: password,
         };
 
@@ -36,13 +36,13 @@ const Login = ({ navigation }) => {
       <Text style={[styles.textoBold, styles.logo]}>PAPACAPIM</Text>
       <Text style={[styles.texto, styles.header]}>Entre no Papacapim</Text>
       <View style={styles.inputs}>
-        <Text style={styles.texto}>Email</Text>
+        <Text style={styles.texto}>Login</Text>
         <TextInput
           style={styles.input}
-          placeholder="Digite o seu email"
+          placeholder="Digite o seu Login"
           placeholderTextColor="gray"
-          value={email}
-          onChangeText={setEmail}
+          value={userLogin}
+          onChangeText={setUserLogin}
         />
         <Text style={styles.texto}>Senha</Text>
         <TextInput
@@ -57,7 +57,7 @@ const Login = ({ navigation }) => {
       <View style={styles.buttons}>
         <TouchableOpacity
           style={[styles.touchable, styles.loginBut]}
-          onPress={() => navigation.navigate("Feed")}
+          onPress={login}
         >
           <Text style={styles.textoBold}>Login</Text>
         </TouchableOpacity>

@@ -13,7 +13,7 @@ const SignUp = ({ navigation }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
 
   const signUp = async () => {
     try {
@@ -21,26 +21,32 @@ const SignUp = ({ navigation }) => {
         name !== "" &&
         password !== "" &&
         confirm !== "" &&
-        email !== "" &&
+        login !== "" &&
         password === confirm
       ) {
         const userData = {
-          login: email,
+          login: login,
           name: name,
           password: password,
-          confirmPassword: confirm,
+          password_confirmation: confirm,
         };
 
         const response = await createUser(userData);
-        console.log("Usuário criado com sucesso:", response);
-        Alert.alert("Usuário criado com sucesso:", response);
+        console.log("Usuário criado com sucesso:", JSON.stringify(response));
+        Alert.alert("Usuário criado com sucesso.");
         navigation.navigate("Login");
       } else {
         console.log("Preencha todos os campos e verifique as senhas.");
         Alert.alert("Preencha todos os campos e verifique as senhas.");
       }
     } catch (error) {
-      console.log("Erro no cadastro:", error);
+      if (error.response && error.response.data) {
+        console.log("Erro no cadastro:", error.response.data.message);
+        Alert.alert("Erro no cadastro:", error.response.data.message);
+      } else {
+        console.log("Erro no cadastro:", error.message);
+        Alert.alert("Erro no cadastro:", error.message);
+      }
     }
   };
 
@@ -57,13 +63,13 @@ const SignUp = ({ navigation }) => {
           value={name}
           onChangeText={setName}
         />
-        <Text style={styles.texto}>Email</Text>
+        <Text style={styles.texto}>Login</Text>
         <TextInput
           style={styles.input}
-          placeholder="Digite o email"
+          placeholder="Digite o nome de Login"
           placeholderTextColor="gray"
-          value={email}
-          onChangeText={setEmail}
+          value={login}
+          onChangeText={setLogin}
         />
         <Text style={styles.texto}>Senha</Text>
         <TextInput

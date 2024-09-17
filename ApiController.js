@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = axios.create({
-  baseURL: "https://api.papacapim.just.pro.br:8000",
+  baseURL: "https://api.papacapim.just.pro.br",
   timeout: 5000,
 });
 
@@ -21,22 +21,21 @@ const requestUsingToken = async (url, method = "get", data = null) => {
     const token = await getToken();
     const config = {
       method,
-      url: `https://api.papacapim.just.pro.br:8000${url}`,
+      url: `https://api.papacapim.just.pro.br${url}`,
       headers: {},
     };
 
-    // Adiciona o token ao cabeçalho, se disponível
     if (token) {
       config.headers["x-session-token"] = token;
-      console.log("Token enviado:", token); // Confirma o envio do token
+      console.log("Token enviado:", token);
     }
 
-    // Se for uma requisição POST ou PUT, inclui os dados
-    if (data && (method === "post" || method === "put")) {
+    if (data && (method === "post" || method === "put" || method === "patch")) {
       config.data = data;
     }
-
     const response = await axios(config);
+    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error("Erro na requisição:", error);
@@ -49,24 +48,74 @@ const createUser = async (userData) => {
     const response = await api.post("/users", { user: userData });
     return response.data;
   } catch (error) {
-    console.error("Erro ao criar usuário: ", error);
+    console.error(
+      "Erro ao criar usuário: ",
+      error.response ? error.response.data : error.message
+    );
     throw error;
   }
 };
 
-const getUsers = async () => {
+const getCurrentUser = async () => {
   try {
-    const response = await requestUsingToken("/users", "get");
-    return response.data;
+    const userLogin = await AsyncStorage.getItem("user_login");
+
+    if (!userLogin) {
+      throw new Error("Login de usuário não encontrado no AsyncStorage.");
+    }
+
+    const user = await requestUsingToken(`/users/${userLogin}`);
+
+    return user;
   } catch (error) {
-    console.error("Erro ao buscar usuários: ", error);
+    console.error(
+      "Erro ao buscar o usuário:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+const changeUserSettings = async (userData) => {
+  try {
+    const user = await requestUsingToken(`/users/1`, "patch", {
+      user: userData,
+    });
+    return user;
+  } catch (error) {
+    console.error(
+      "Erro ao buscar esse usuário:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+const deleteUser = async () => {
+  try {
+    const deletedUser = await requestUsingToken(`/users/1`, "delete");
+    return deletedUser;
+  } catch (error) {
+    console.error(
+      "Erro ao deletar o usuário:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
+const getAllUsers = async () => {
+  try {
+    const response = await requestUsingToken("/users");
+    return response;
+  } catch (error) {
+    console.error("Erro ao achar usuários: ", error);
     throw error;
   }
 };
 
 const loginUser = async (userData) => {
   try {
-    const response = await requestUsingToken("sessions", "post", userData);
+    const response = await api.post("/sessions", userData);
 
     const { id, token, user_login } = response.data;
 
@@ -85,6 +134,9 @@ module.exports = {
   getToken,
   requestUsingToken,
   createUser,
-  getUsers,
   loginUser,
+  getAllUsers,
+  getCurrentUser,
+  changeUserSettings,
+  deleteUser,
 };
