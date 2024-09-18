@@ -9,43 +9,59 @@ import Header from "../components/header";
 import Tabs from "../components/tabs";
 import Footer from "../components/footer";
 import Post from "../components/post";
+import { useEffect, useState } from "react";
+import { getPosts } from "../ApiController";
 
 const Feed = ({ navigation }) => {
-  const posts = [
-    {
-      user: "randomUser1",
-      message:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In euismod accumsan sem, sit amet viverra nisi facilisis ut. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    },
-    {
-      user: "randomUser2",
-      message:
-        "Pellentesque in sodales dui. Aliquam euismod elit sed urna viverra, ut tincidunt nunc pharetra.",
-    },
-    {
-      user: "randomUser3",
-      message:
-        "Quisque ex libero, dictum et dui eu, tempor sagittis nunc. Quisque scelerisque id mi eget porta.",
-    },
-    {
-      user: "randomUser4",
-      message:
-        "Nunc posuere a lacus in varius. Phasellus dignissim dapibus nisl vel sodales.",
-    },
-    {
-      user: "randomUser5",
-      message:
-        "Etiam eu cursus tellus. Nulla gravida velit sit amet leo congue, in lacinia mi sollicitudin.",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const getAllPosts = async () => {
+    try {
+      setErrorMessage(""); // Limpa mensagem de erro antes de cada busca
+      const response = await getPosts();
+
+      // Se a resposta for uma lista vazia ou um objeto indefinido
+      if (!response || (Array.isArray(response) && response.length === 0)) {
+        setErrorMessage("Posts não encontrados.");
+        setPosts([]); // Limpa a lista de usuários
+      } else {
+        // Garante que o resultado é um array
+        const postsArray = Array.isArray(response) ? response : [response];
+        setPosts(postsArray);
+      }
+    } catch (error) {
+      // Se a API retornar um 404, exibe uma mensagem de usuário não encontrado
+      if (error.response && error.response.status === 404) {
+        setErrorMessage("Posts não encontrados.");
+      } else {
+        // Exibe outras mensagens de erro genérico
+        setErrorMessage(
+          error.response ? error.response.data : "Erro ao buscar posts."
+        );
+      }
+      setPosts([]); // Limpa a lista de usuários no caso de erro
+    }
+  };
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
       <Tabs />
+      {errorMessage ? (
+        <View style={styles.sectionContent}>
+          <Text style={styles.texto}>{errorMessage}</Text>
+        </View>
+      ) : null}
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        {posts.map((post, index) => (
-          <Post key={index} user={post.user} message={post.message} />
-        ))}
+        {posts.length > 0
+          ? posts.map((post, index) => (
+              <Post key={index} user={post.login} message={post.message} />
+            ))
+          : null}
       </ScrollView>
       <TouchableOpacity
         style={styles.postButton}

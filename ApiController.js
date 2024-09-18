@@ -127,6 +127,18 @@ const searchUser = async (user) => {
   }
 };
 
+const getPosts = async (user) => {
+  try {
+    const response = await requestUsingToken("/posts");
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar usuários:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
 const loginUser = async (userData) => {
   try {
     const response = await api.post("/sessions", userData);
@@ -154,4 +166,5 @@ module.exports = {
   changeUserSettings,
   deleteUser,
   searchUser,
+  getPosts,
 };
