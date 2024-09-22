@@ -5,8 +5,10 @@ import {
   View,
   Image,
   ScrollView,
+  ActivityIndicator, // Import ActivityIndicator for loading spinner
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../context/auth";
 import ProfileHeader from "../components/profileHeader";
 import ProfileTabs from "../components/profileTabs";
 import Footer from "../components/footer";
@@ -19,12 +21,13 @@ import {
 } from "../ApiController";
 
 const UserProfile = ({ route, navigation }) => {
+  const { currentName, currentLogin } = useContext(AuthContext);
   const { user } = route.params;
   const [name, setName] = useState("");
   const [login, setLogin] = useState(user);
-  const [currentUser, setCurrentUser] = useState("");
   const [isFollowingUser, setIsFollowingUser] = useState(false);
   const [followerLogins, setFollowerLogins] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const getUserData = async () => {
     try {
@@ -40,7 +43,7 @@ const UserProfile = ({ route, navigation }) => {
 
   const follow = async () => {
     try {
-      const response = await followUser(login);
+      await followUser(login);
       setIsFollowingUser(true);
     } catch (error) {
       console.log(
@@ -52,7 +55,7 @@ const UserProfile = ({ route, navigation }) => {
 
   const unfollow = async () => {
     try {
-      const response = await unfollowUser(login);
+      await unfollowUser(login);
       setIsFollowingUser(false);
     } catch (error) {
       console.log(
@@ -66,13 +69,9 @@ const UserProfile = ({ route, navigation }) => {
     try {
       const response = await getFollowers(login);
       setIsFollowingUser(
-        response.some((item) => item.follower_login === currentUser)
+        response.some((item) => item.follower_login === currentLogin)
       );
-      console.log("Seguindo? ", isFollowingUser);
       setFollowerLogins(response.map((item) => item.follower_login));
-      console.log("Resposta: ", response);
-
-      console.log("Usuários seguindo:", followerLogins);
     } catch (error) {
       console.log(
         "Erro ao seguir o usuário: ",
@@ -81,32 +80,24 @@ const UserProfile = ({ route, navigation }) => {
     }
   };
 
-  const getLoggedUser = async () => {
-    try {
-      const user = await getCurrentUser();
-      console.log("Usuário: ", user);
-      setCurrentUser(user.login);
-    } catch (error) {
-      console.log(
-        "Usuário não encontrado: ",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       await getUserData();
-      await getLoggedUser();
       await findFollowers();
+      setLoading(false);
     };
-
+    console.log("NAME: ", currentName);
+    console.log("LOGIN: ", currentLogin);
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log("Seguindo? ", isFollowingUser);
-  }, [isFollowingUser]);
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#76ABAE" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -168,25 +159,11 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#222831",
   },
-  textoBold: {
-    color: "#EEE",
-    fontFamily: "Kameron-Bold",
-    fontSize: 24,
-  },
-  texto: {
-    color: "#EEE",
-    fontFamily: "Kameron-Regular",
-    fontSize: 20,
-  },
-  textoSpan: {
-    color: "#76ABAE",
-  },
-  logo: {
-    bottom: 170,
-  },
-  header: {
-    bottom: 80,
-    fontFamily: "Kameron-SemiBold",
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#222831",
   },
   textoBold: {
     color: "#EEE",

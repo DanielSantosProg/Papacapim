@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../context/auth";
 import {
   View,
   Text,
@@ -9,37 +10,21 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  getCurrentUser,
-  changeUserSettings,
-  deleteUser,
-} from "../ApiController";
+import { changeUserSettings, deleteUser } from "../ApiController";
 
 export default function AccountSettings(props) {
-  const [newUsername, setNewUsername] = useState(null);
-  const [username, setUsername] = useState("");
+  const { currentName, currentLogin } = useContext(AuthContext);
+
+  // Inicializa os novos valores de nome e login com os valores do contexto
+  const [newUsername, setNewUsername] = useState(currentName);
+  const [newLogin, setNewLogin] = useState(currentLogin);
+
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [newLogin, setNewLogin] = useState(null);
-  const [login, setLogin] = useState("");
 
   const [isUsernameVisible, setIsUsernameVisible] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoginVisible, setisLoginVisible] = useState(false);
-
-  const getUser = async () => {
-    try {
-      const user = await getCurrentUser();
-      console.log("Usuário: ", user);
-      setLogin(user.login);
-      setUsername(user.name);
-    } catch (error) {
-      console.log(
-        "Usuário não encontrado: ",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
 
   const changeUserDetails = async () => {
     try {
@@ -47,14 +32,10 @@ export default function AccountSettings(props) {
 
       if (newUsername) {
         userData.name = newUsername;
-      } else {
-        userData.name = username; // mantém o valor atual se o nome de usuário não for alterado
       }
 
       if (newLogin) {
         userData.login = newLogin;
-      } else {
-        userData.login = login; // mantém o valor atual se o login não for alterado
       }
 
       if (password !== "" && confirm !== "") {
@@ -87,13 +68,10 @@ export default function AccountSettings(props) {
     }
   };
 
-  useEffect(() => {
-    getUser();
-  }, []);
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Alterar dados da conta</Text>
-      <Text style={styles.username}>@{login}</Text>
+      <Text style={styles.username}>@{newLogin}</Text>
 
       <TouchableOpacity
         style={styles.sectionHeader}
@@ -113,8 +91,8 @@ export default function AccountSettings(props) {
             style={styles.input}
             placeholder="Nome de usuário"
             placeholderTextColor="#ccc"
-            value={username}
-            onChangeText={setUsername}
+            value={newUsername} // Usa o novo nome
+            onChangeText={setNewUsername} // Atualiza o novo nome
           />
         </View>
       )}
@@ -171,8 +149,8 @@ export default function AccountSettings(props) {
             style={styles.input}
             placeholder="Login"
             placeholderTextColor="#ccc"
-            value={login}
-            onChangeText={setLogin}
+            value={newLogin} // Usa o novo login
+            onChangeText={setNewLogin} // Atualiza o novo login
           />
         </View>
       )}
@@ -181,7 +159,6 @@ export default function AccountSettings(props) {
         style={styles.button}
         onPress={() => {
           changeUserDetails();
-
           Alert.alert("Faça login novamente.");
           props.navigation.navigate("Login");
         }}

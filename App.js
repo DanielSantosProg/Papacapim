@@ -4,6 +4,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
+import AuthProvider from "./context/auth";
 
 // imports das views
 import Login from "./views/Login";
@@ -34,48 +35,50 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ title: "Login" }}
-        />
-        <Stack.Screen
-          name="SignUp"
-          component={SignUp}
-          options={{ title: "Cadastro" }}
-        />
-        <Stack.Screen
-          name="Feed"
-          component={Feed}
-          options={{ title: "Feed" }}
-        />
-        <Stack.Screen
-          name="UserProfile"
-          component={UserProfile}
-          options={{ title: "PerfilUsuario" }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{ title: "Perfil" }}
-        />
-        <Stack.Screen
-          name="AccountSettings"
-          component={AccountSettings}
-          options={{ title: "Configurações da conta" }}
-        />
-        <Stack.Screen
-          name="Post"
-          component={Post}
-          options={{ title: "Postagem" }}
-        />
-        <Stack.Screen
-          name="Search"
-          component={Search}
-          options={{ title: "Busca" }}
-        />
-      </Stack.Navigator>
+      <AuthProvider>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ title: "Login" }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{ title: "Cadastro" }}
+          />
+          <Stack.Screen
+            name="Feed"
+            component={Feed}
+            options={{ title: "Feed" }}
+          />
+          <Stack.Screen
+            name="UserProfile"
+            component={UserProfile}
+            options={{ title: "PerfilUsuario" }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{ title: "Perfil" }}
+          />
+          <Stack.Screen
+            name="AccountSettings"
+            component={AccountSettings}
+            options={{ title: "Configurações da conta" }}
+          />
+          <Stack.Screen
+            name="Post"
+            component={Post}
+            options={{ title: "Postagem" }}
+          />
+          <Stack.Screen
+            name="Search"
+            component={Search}
+            options={{ title: "Busca" }}
+          />
+        </Stack.Navigator>
+      </AuthProvider>
     </NavigationContainer>
   );
 }
