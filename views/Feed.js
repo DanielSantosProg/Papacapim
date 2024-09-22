@@ -59,7 +59,12 @@ const Feed = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {posts.length > 0
           ? posts.map((post, index) => (
-              <Post key={index} user={post.login} message={post.message} />
+              <Post
+                key={index}
+                user={post.user_login}
+                navigation={navigation}
+                message={post.message}
+              />
             ))
           : null}
       </ScrollView>

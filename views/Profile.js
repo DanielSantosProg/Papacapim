@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import ProfileHeader from "../components/profileHeader";
 import ProfileTabs from "../components/profileTabs";
 import Footer from "../components/footer";
-import { getCurrentUser } from "../ApiController";
+import { getCurrentUser, getFollowers } from "../ApiController";
 
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -30,8 +30,21 @@ const Profile = ({ navigation }) => {
     }
   };
 
+  const findFollowers = async () => {
+    try {
+      const followers = await getFollowers();
+      console.log(followers);
+    } catch (error) {
+      console.log(
+        "Usuário não encontrado: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
   useEffect(() => {
     getUser();
+    findFollowers();
   }, []);
 
   return (

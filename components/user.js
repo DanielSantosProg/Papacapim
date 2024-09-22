@@ -5,7 +5,10 @@ const User = (props) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
-          onPress={() => props.navigation.navigate("UserProfile")}
+          onPress={() => {
+            console.log("Post User: ", props.login);
+            props.navigation.navigate("UserProfile", { user: props.login });
+          }}
         >
           <Image
             source={require("../assets/imgs/user_icon.png")}

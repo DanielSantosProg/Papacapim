@@ -6,11 +6,108 @@ import {
   Image,
   ScrollView,
 } from "react-native";
+import { useState, useEffect } from "react";
 import ProfileHeader from "../components/profileHeader";
 import ProfileTabs from "../components/profileTabs";
 import Footer from "../components/footer";
+import {
+  getUser,
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getCurrentUser,
+} from "../ApiController";
 
-const UserProfile = ({ navigation }) => {
+const UserProfile = ({ route, navigation }) => {
+  const { user } = route.params;
+  const [name, setName] = useState("");
+  const [login, setLogin] = useState(user);
+  const [currentUser, setCurrentUser] = useState("");
+  const [isFollowingUser, setIsFollowingUser] = useState(false);
+  const [followerLogins, setFollowerLogins] = useState([]);
+
+  const getUserData = async () => {
+    try {
+      const user = await getUser(login);
+      setName(user.name);
+    } catch (error) {
+      console.log(
+        "Usuário não encontrado: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  const follow = async () => {
+    try {
+      const response = await followUser(login);
+      setIsFollowingUser(true);
+    } catch (error) {
+      console.log(
+        "Erro ao seguir o usuário: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  const unfollow = async () => {
+    try {
+      const response = await unfollowUser(login);
+      setIsFollowingUser(false);
+    } catch (error) {
+      console.log(
+        "Erro ao deixar de seguir o usuário: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  const findFollowers = async () => {
+    try {
+      const response = await getFollowers(login);
+      setIsFollowingUser(
+        response.some((item) => item.follower_login === currentUser)
+      );
+      console.log("Seguindo? ", isFollowingUser);
+      setFollowerLogins(response.map((item) => item.follower_login));
+      console.log("Resposta: ", response);
+
+      console.log("Usuários seguindo:", followerLogins);
+    } catch (error) {
+      console.log(
+        "Erro ao seguir o usuário: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  const getLoggedUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      console.log("Usuário: ", user);
+      setCurrentUser(user.login);
+    } catch (error) {
+      console.log(
+        "Usuário não encontrado: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getUserData();
+      await getLoggedUser();
+      await findFollowers();
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log("Seguindo? ", isFollowingUser);
+  }, [isFollowingUser]);
+
   return (
     <View style={styles.container}>
       <ProfileHeader navigation={navigation} />
@@ -35,13 +132,22 @@ const UserProfile = ({ navigation }) => {
             style={styles.link}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.touchable}>
-          <Text style={styles.follow}>Seguir</Text>
-        </TouchableOpacity>
+        {isFollowingUser ? (
+          <TouchableOpacity
+            style={styles.touchableUnfollow}
+            onPress={() => unfollow()}
+          >
+            <Text style={styles.follow}>Unfollow</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.touchable} onPress={() => follow()}>
+            <Text style={styles.follow}>Follow</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View style={styles.userText}>
-        <Text style={styles.textoBold}>User123</Text>
-        <Text style={styles.texto}>@user123</Text>
+        <Text style={styles.textoBold}>{name}</Text>
+        <Text style={styles.texto}>@{login}</Text>
         <Text style={[styles.texto, styles.description]}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
           vel.
@@ -99,6 +205,16 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 30,
     backgroundColor: "#76ABAE",
+    left: 20,
+    top: 20,
+  },
+  touchableUnfollow: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 120,
+    height: 50,
+    borderRadius: 2,
+    backgroundColor: "red",
     left: 20,
     top: 20,
   },

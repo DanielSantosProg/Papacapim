@@ -71,7 +71,12 @@ const Search = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {users.length > 0
           ? users.map((user, index) => (
-              <User key={index} username={user.name} login={user.login} />
+              <User
+                key={index}
+                username={user.name}
+                login={user.login}
+                navigation={navigation}
+              />
             ))
           : null}
       </ScrollView>

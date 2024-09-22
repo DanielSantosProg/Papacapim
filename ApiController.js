@@ -23,6 +23,9 @@ const requestUsingToken = async (url, method = "get", data = null) => {
       method,
       url: `https://api.papacapim.just.pro.br${url}`,
       headers: {},
+      validateStatus: (status) => {
+        return status >= 200 && status < 300; // Considere status 200-299 como sucesso
+      },
     };
 
     if (token) {
@@ -115,6 +118,18 @@ const getAllUsers = async () => {
   }
 };
 
+const getUser = async (login) => {
+  try {
+    const response = await requestUsingToken(`/users/${login}`);
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar usuários:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
 const searchUser = async (user) => {
   try {
     const response = await requestUsingToken(`/users/${user}`);
@@ -156,6 +171,51 @@ const loginUser = async (userData) => {
   }
 };
 
+const followUser = async (login) => {
+  try {
+    const response = await requestUsingToken(
+      `/users/${login}/followers`,
+      "post"
+    );
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao seguir o usuário:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+const unfollowUser = async (login) => {
+  try {
+    const response = await requestUsingToken(
+      `/users/${login}/followers/1`,
+      "delete"
+    );
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao deixar de seguir o usuário:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+const getFollowers = async (login) => {
+  try {
+    const response = await requestUsingToken(`/users/${login}/followers`);
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao buscar os seguidores desse usuário:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
 module.exports = {
   getToken,
   requestUsingToken,
@@ -167,4 +227,8 @@ module.exports = {
   deleteUser,
   searchUser,
   getPosts,
+  getUser,
+  followUser,
+  getFollowers,
+  unfollowUser,
 };
