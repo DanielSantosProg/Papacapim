@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { getCurrentUser } from "../ApiController";
+import { getCurrentUser, loginUser } from "../ApiController";
 
 export const AuthContext = createContext({});
 
@@ -12,13 +12,25 @@ function AuthProvider({ children }) {
       console.log("Usuário: ", user);
       setCurrentUserLogin(user.login);
       setCurrentUserName(user.name);
-      console.log("Usuário: ", currentUserLogin);
-      console.log("Login: ", currentUserName);
     } catch (error) {
       console.log(
         "Usuário não encontrado: ",
         error.response ? error.response.data : error.message
       );
+    }
+  };
+
+  const logout = () => {
+    setCurrentUserLogin("");
+    setCurrentUserName("");
+  };
+
+  const login = async (userData) => {
+    try {
+      await loginUser(userData); // Chama a função de login do controller
+      await getLoggedUser(); // Atualiza o contexto quando houver novo login
+    } catch (error) {
+      console.log("Erro ao fazer login:", error);
     }
   };
 
@@ -31,7 +43,14 @@ function AuthProvider({ children }) {
   }, []);
   return (
     <AuthContext.Provider
-      value={{ currentName: currentUserName, currentLogin: currentUserLogin }}
+      value={{
+        currentName: currentUserName,
+        currentLogin: currentUserLogin,
+        setCurrentUserLogin,
+        setCurrentUserName,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

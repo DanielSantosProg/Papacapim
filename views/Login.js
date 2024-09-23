@@ -5,14 +5,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useState } from "react";
-import { loginUser } from "../ApiController";
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/auth";
 
 const Login = ({ navigation }) => {
+  const { login } = useContext(AuthContext);
   const [userLogin, setUserLogin] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = async () => {
+  const useLogin = async () => {
     try {
       if (userLogin !== "" && password !== "") {
         const userData = {
@@ -20,7 +21,7 @@ const Login = ({ navigation }) => {
           password: password,
         };
 
-        const response = await loginUser(userData);
+        const response = await login(userData);
         console.log("Login feito com sucesso:", response);
         navigation.navigate("Feed");
       } else {
@@ -57,7 +58,7 @@ const Login = ({ navigation }) => {
       <View style={styles.buttons}>
         <TouchableOpacity
           style={[styles.touchable, styles.loginBut]}
-          onPress={login}
+          onPress={useLogin}
         >
           <Text style={styles.textoBold}>Login</Text>
         </TouchableOpacity>

@@ -30,21 +30,8 @@ const Profile = ({ navigation }) => {
     }
   };
 
-  const findFollowers = async () => {
-    try {
-      const followers = await getFollowers();
-      console.log(followers);
-    } catch (error) {
-      console.log(
-        "Usuário não encontrado: ",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
-
   useEffect(() => {
     getUser();
-    findFollowers();
   }, []);
 
   return (

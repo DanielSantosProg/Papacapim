@@ -171,6 +171,25 @@ const loginUser = async (userData) => {
   }
 };
 
+const logoutUser = async () => {
+  try {
+    const sessionId = await AsyncStorage.getItem("sessionId");
+    if (!sessionId) throw new Error("ID de sessão não encontrado.");
+
+    const response = await requestUsingToken(
+      `/sessions/${sessionId}`,
+      "delete"
+    );
+    await AsyncStorage.removeItem("sessionId");
+    await AsyncStorage.removeItem("sessionToken");
+    await AsyncStorage.removeItem("user_login");
+    return response;
+  } catch (error) {
+    console.error("Erro ao fazer logout: ", error);
+    throw error;
+  }
+};
+
 const followUser = async (login) => {
   try {
     const response = await requestUsingToken(
@@ -231,4 +250,5 @@ module.exports = {
   followUser,
   getFollowers,
   unfollowUser,
+  logoutUser,
 };

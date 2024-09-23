@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, StatusBar } from "react-native";
 import AuthProvider from "./context/auth";
 
 // imports das views
@@ -35,12 +35,13 @@ export default function App() {
   }
   return (
     <NavigationContainer>
+      <StatusBar />
       <AuthProvider>
         <Stack.Navigator>
           <Stack.Screen
             name="Login"
             component={Login}
-            options={{ title: "Login" }}
+            options={{ title: "Login", headerShown: false }}
           />
           <Stack.Screen
             name="SignUp"
@@ -50,17 +51,17 @@ export default function App() {
           <Stack.Screen
             name="Feed"
             component={Feed}
-            options={{ title: "Feed" }}
+            options={{ title: "Feed", headerShown: false }}
           />
           <Stack.Screen
             name="UserProfile"
             component={UserProfile}
-            options={{ title: "PerfilUsuario" }}
+            options={{ title: "PerfilUsuario", headerShown: false }}
           />
           <Stack.Screen
             name="Profile"
             component={Profile}
-            options={{ title: "Perfil" }}
+            options={{ title: "Perfil", headerShown: false }}
           />
           <Stack.Screen
             name="AccountSettings"
@@ -70,7 +71,7 @@ export default function App() {
           <Stack.Screen
             name="Post"
             component={Post}
-            options={{ title: "Postagem" }}
+            options={{ title: "Postagem", headerShown: false }}
           />
           <Stack.Screen
             name="Search"

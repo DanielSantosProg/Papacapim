@@ -1,9 +1,23 @@
-// components/Footer.js
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+("react");
+import { AuthContext } from "../context/auth";
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { logoutUser } from "../ApiController";
 
 const Footer = ({ navigation, page }) => {
+  const { currentName, currentLogin, logout } = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState(page);
+
+  const handleLogout = async () => {
+    try {
+      const response = await logoutUser();
+      console.log("Logout bem-sucedido:", response);
+      logout();
+      navigation.popToTop();
+    } catch (error) {
+      console.error("Erro ao fazer logout: ", error);
+    }
+  };
 
   return (
     <View style={styles.footerContainer}>
@@ -40,14 +54,16 @@ const Footer = ({ navigation, page }) => {
         />
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => setSelectedTab("Notifications")}
+        onPress={() => {
+          handleLogout();
+        }}
         style={styles.tab}
       >
         <Image
           source={
-            selectedTab === "Notifications"
-              ? require("../assets/imgs/notification.png")
-              : require("../assets/imgs/notification_outline.png")
+            selectedTab === "Logout"
+              ? require("../assets/imgs/logout.png")
+              : require("../assets/imgs/logout.png")
           }
           style={styles.icon}
         />
