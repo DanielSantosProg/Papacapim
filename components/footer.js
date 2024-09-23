@@ -5,13 +5,13 @@ import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { logoutUser } from "../ApiController";
 
 const Footer = ({ navigation, page }) => {
-  const { currentName, currentLogin, logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState(page);
 
   const handleLogout = async () => {
     try {
       const response = await logoutUser();
-      console.log("Logout bem-sucedido:", response);
+      console.log("Logout bem-sucedido.");
       logout();
       navigation.popToTop();
     } catch (error) {

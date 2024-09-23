@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../context/auth";
 import {
   View,
@@ -11,9 +11,10 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { changeUserSettings, deleteUser } from "../ApiController";
+import { logoutUser } from "../ApiController";
 
 export default function AccountSettings(props) {
-  const { currentName, currentLogin } = useContext(AuthContext);
+  const { currentName, currentLogin, logout } = useContext(AuthContext);
 
   // Inicializa os novos valores de nome e login com os valores do contexto
   const [newUsername, setNewUsername] = useState(currentName);
@@ -65,6 +66,17 @@ export default function AccountSettings(props) {
         console.log("Erro ao alterar dados: ", error.message);
         Alert.alert("Erro: ", error.message);
       }
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await logoutUser();
+      console.log("Logout bem-sucedido.");
+      logout();
+      props.navigation.popToTop();
+    } catch (error) {
+      console.error("Erro ao fazer logout: ", error);
     }
   };
 
@@ -159,8 +171,7 @@ export default function AccountSettings(props) {
         style={styles.button}
         onPress={() => {
           changeUserDetails();
-          Alert.alert("Faça login novamente.");
-          props.navigation.navigate("Login");
+          handleLogout();
         }}
       >
         <Text style={styles.buttonText}>Confirmar Alterações</Text>
@@ -169,7 +180,7 @@ export default function AccountSettings(props) {
         style={styles.buttonDelete}
         onPress={() => {
           deleteUser();
-          props.navigation.navigate("Login");
+          handleLogout();
         }}
       >
         <Text style={styles.buttonText}>Deletar Usuário</Text>

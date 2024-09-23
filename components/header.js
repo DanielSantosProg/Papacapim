@@ -3,12 +3,6 @@ import { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 const Header = ({ navigation }) => {
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible);
-  };
-
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
@@ -19,34 +13,12 @@ const Header = ({ navigation }) => {
       </TouchableOpacity>
 
       <Text style={styles.headerText}>PAPACAPIM</Text>
-      <TouchableOpacity onPress={toggleDropdown}>
+      <TouchableOpacity onPress={() => navigation.navigate("AccountSettings")}>
         <Image
-          source={require("../assets/imgs/menu_vertical.png")}
+          source={require("../assets/imgs/settings.png")}
           style={styles.icon}
         />
       </TouchableOpacity>
-
-      {isDropdownVisible && (
-        <View style={styles.dropdownMenu}>
-          <TouchableOpacity
-            onPress={() => {
-              setIsDropdownVisible(false);
-              navigation.navigate("AccountSettings");
-            }}
-          >
-            <Text style={styles.dropdownItem}>Configurações da conta</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setIsDropdownVisible(false);
-              // Logout
-              navigation.navigate("Login");
-            }}
-          >
-            <Text style={styles.dropdownItem}>Logout</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </View>
   );
 };
