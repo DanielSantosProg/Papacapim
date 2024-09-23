@@ -37,7 +37,6 @@ const requestUsingToken = async (url, method = "get", data = null) => {
       config.data = data;
     }
     const response = await axios(config);
-    console.log(response);
 
     return response.data;
   } catch (error) {

@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
 import { useState, useEffect } from "react";
 import ProfileHeader from "../components/profileHeader";
 import ProfileTabs from "../components/profileTabs";

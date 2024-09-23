@@ -27,10 +27,12 @@ function AuthProvider({ children }) {
 
   const login = async (userData) => {
     try {
-      await loginUser(userData); // Chama a função de login do controller
+      const response = await loginUser(userData); // Chama a função de login do controller
       await getLoggedUser(); // Atualiza o contexto quando houver novo login
+      return response; // Retorna a resposta de sucesso
     } catch (error) {
       console.log("Erro ao fazer login:", error);
+      throw error; // Propaga o erro para a página de login tratar
     }
   };
 

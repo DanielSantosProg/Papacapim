@@ -4,6 +4,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/auth";
@@ -22,16 +23,23 @@ const Login = ({ navigation }) => {
         };
 
         const response = await login(userData);
-        console.log("Login feito com sucesso:", response);
-        navigation.navigate("Feed");
+
+        if (response) {
+          console.log("Login feito com sucesso:", response);
+          navigation.navigate("Feed");
+        }
       } else {
         console.log("Verifique que os campos estão preenchidos corretamente.");
         Alert.alert("Verifique que os campos estão preenchidos corretamente.");
       }
     } catch (error) {
-      console.log("Erro no cadastro:", error);
+      Alert.alert(
+        "Falha no login",
+        "Login ou senha inválidos. Tente novamente."
+      );
     }
   };
+
   return (
     <View style={styles.container}>
       <Text style={[styles.textoBold, styles.logo]}>PAPACAPIM</Text>

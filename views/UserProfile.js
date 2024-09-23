@@ -17,7 +17,6 @@ import {
   followUser,
   unfollowUser,
   getFollowers,
-  getCurrentUser,
 } from "../ApiController";
 
 const UserProfile = ({ route, navigation }) => {
@@ -86,8 +85,7 @@ const UserProfile = ({ route, navigation }) => {
       await findFollowers();
       setLoading(false);
     };
-    console.log("NAME: ", currentName);
-    console.log("LOGIN: ", currentLogin);
+
     fetchData();
   }, []);
 
