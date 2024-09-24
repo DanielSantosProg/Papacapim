@@ -31,14 +31,17 @@ export default function AccountSettings(props) {
     try {
       const userData = {};
 
-      if (newUsername) {
+      // Verifica se o nome foi alterado antes de adicionar ao objeto
+      if (newUsername !== currentName) {
         userData.name = newUsername;
       }
 
-      if (newLogin) {
+      // Verifica se o login foi alterado antes de adicionar ao objeto
+      if (newLogin !== currentLogin) {
         userData.login = newLogin;
       }
 
+      // Verifica se a senha foi alterada e se ambas são iguais
       if (password !== "" && confirm !== "") {
         if (password === confirm) {
           userData.password = password;
@@ -50,10 +53,14 @@ export default function AccountSettings(props) {
         }
       }
 
+      // Checa se o objeto userData tem algum campo antes de enviar a requisição
       if (Object.keys(userData).length > 0) {
         const response = await changeUserSettings(userData);
         console.log("Usuário alterado com sucesso: ", JSON.stringify(response));
         Alert.alert("Usuário alterado com sucesso");
+
+        // Chama o logout diretamente aqui após a alteração ocorrer
+        handleLogout();
       } else {
         console.log("Nenhuma alteração detectada");
         Alert.alert("Erro", "Nenhuma alteração foi detectada.");
@@ -103,8 +110,8 @@ export default function AccountSettings(props) {
             style={styles.input}
             placeholder="Nome de usuário"
             placeholderTextColor="#ccc"
-            value={newUsername} // Usa o novo nome
-            onChangeText={setNewUsername} // Atualiza o novo nome
+            value={newUsername}
+            onChangeText={setNewUsername}
           />
         </View>
       )}
@@ -161,8 +168,8 @@ export default function AccountSettings(props) {
             style={styles.input}
             placeholder="Login"
             placeholderTextColor="#ccc"
-            value={newLogin} // Usa o novo login
-            onChangeText={setNewLogin} // Atualiza o novo login
+            value={newLogin}
+            onChangeText={setNewLogin}
           />
         </View>
       )}
@@ -171,7 +178,6 @@ export default function AccountSettings(props) {
         style={styles.button}
         onPress={() => {
           changeUserDetails();
-          handleLogout();
         }}
       >
         <Text style={styles.buttonText}>Confirmar Alterações</Text>

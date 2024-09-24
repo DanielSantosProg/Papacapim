@@ -27,22 +27,15 @@ function AuthProvider({ children }) {
 
   const login = async (userData) => {
     try {
-      const response = await loginUser(userData); // Chama a função de login do controller
-      await getLoggedUser(); // Atualiza o contexto quando houver novo login
-      return response; // Retorna a resposta de sucesso
+      const response = await loginUser(userData);
+      await getLoggedUser();
+      return response;
     } catch (error) {
       console.log("Erro ao fazer login:", error);
-      throw error; // Propaga o erro para a página de login tratar
+      throw error;
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await getLoggedUser();
-    };
-
-    fetchData();
-  }, []);
   return (
     <AuthContext.Provider
       value={{
