@@ -17,7 +17,7 @@ const User = (props) => {
         </TouchableOpacity>
         <Text style={styles.userName}>{props.username}</Text>
       </View>
-      <Text style={styles.texto}>{props.login}</Text>
+      <Text style={styles.texto}>@{props.login}</Text>
     </View>
   );
 };

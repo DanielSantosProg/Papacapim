@@ -5,8 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import User from "../components/user";
@@ -16,6 +17,7 @@ const Search = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [searchedUser, setSearchedUser] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const searchUsers = async () => {
     try {
@@ -44,6 +46,23 @@ const Search = ({ navigation }) => {
       setUsers([]); // Limpa a lista de usuários no caso de erro
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await searchUsers();
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#76ABAE" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -95,6 +114,12 @@ const Search = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#222831",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#222831",
   },
   contentContainer: {

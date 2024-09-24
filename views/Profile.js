@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import { useState, useEffect } from "react";
 import ProfileHeader from "../components/profileHeader";
 import ProfileTabs from "../components/profileTabs";
@@ -8,6 +15,7 @@ import { getCurrentUser, getFollowers } from "../ApiController";
 const Profile = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [login, setLogin] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const getUser = async () => {
     try {
@@ -24,8 +32,21 @@ const Profile = ({ navigation }) => {
   };
 
   useEffect(() => {
-    getUser();
+    const fetchData = async () => {
+      await getUser();
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#76ABAE" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -61,6 +82,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: "100%",
+    backgroundColor: "#222831",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#222831",
   },
   textoBold: {

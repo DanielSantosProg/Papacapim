@@ -5,7 +5,7 @@ import {
   View,
   Image,
   ScrollView,
-  ActivityIndicator, // Import ActivityIndicator for loading spinner
+  ActivityIndicator,
 } from "react-native";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/auth";

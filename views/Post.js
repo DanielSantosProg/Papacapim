@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -8,21 +7,15 @@ import {
   Image,
   TextInput,
 } from "react-native";
+import Footer from "../components/footer";
+import ProfileHeader from "../components/profileHeader";
 
 const Post = ({ navigation }) => {
   const [text, setText] = useState("");
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.goBackContainer}
-      >
-        <Image
-          source={require("../assets/imgs/arrow_left.png")}
-          style={styles.goBack}
-        />
-      </TouchableOpacity>
+      <ProfileHeader navigation={navigation} />
 
       <View style={styles.postContainer}>
         <Image
@@ -46,6 +39,10 @@ const Post = ({ navigation }) => {
       >
         <Text style={styles.postButtonText}>Postar</Text>
       </TouchableOpacity>
+
+      <View style={styles.footerContainer}>
+        <Footer navigation={navigation} page="" />
+      </View>
     </View>
   );
 };
@@ -55,19 +52,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#222831",
   },
-  goBackContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-  },
-  goBack: {
-    width: 24,
-    height: 24,
-  },
   postContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
     paddingHorizontal: 20,
     marginTop: 20,
+    flexGrow: 1,
   },
   userPic: {
     width: 50,
@@ -82,7 +72,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
     color: "white",
     fontSize: 18,
-    maxHeight: 150, // Maximum height the TextInput can grow to
+    maxHeight: 150,
     paddingVertical: 10,
   },
   postButton: {
@@ -91,7 +81,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: 30,
     paddingVertical: 10,
-    marginTop: 30,
+    marginTop: 20,
+    marginBottom: 30,
   },
   postButtonText: {
     color: "white",

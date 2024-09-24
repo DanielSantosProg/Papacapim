@@ -57,7 +57,7 @@ export default function AccountSettings(props) {
       if (Object.keys(userData).length > 0) {
         const response = await changeUserSettings(userData);
         console.log("Usuário alterado com sucesso: ", JSON.stringify(response));
-        Alert.alert("Usuário alterado com sucesso");
+        Alert.alert("Usuário alterado com sucesso. Faça login novamente.");
 
         // Chama o logout diretamente aqui após a alteração ocorrer
         handleLogout();
