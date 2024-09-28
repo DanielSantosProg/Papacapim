@@ -153,6 +153,18 @@ const getPosts = async (user) => {
   }
 };
 
+const getPost = async (id) => {
+  try {
+    const response = await requestUsingToken(`/posts/${id}`);
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar o post:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
 const loginUser = async (userData) => {
   try {
     const response = await api.post("/sessions", userData);
@@ -234,6 +246,45 @@ const getFollowers = async (login) => {
   }
 };
 
+const likePost = async (id) => {
+  try {
+    const response = await requestUsingToken(`/posts/${id}/likes`, "post");
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao curtir o post:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+const dislikePost = async (id) => {
+  try {
+    const response = await requestUsingToken(`/posts/${id}/likes/1`, "delete");
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao descurtir o post:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
+const getLikes = async (id) => {
+  try {
+    const response = await requestUsingToken(`/posts/${id}/likes`);
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar curtidas:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
 module.exports = {
   getToken,
   requestUsingToken,
@@ -245,9 +296,13 @@ module.exports = {
   deleteUser,
   searchUser,
   getPosts,
+  getPost,
   getUser,
   followUser,
   getFollowers,
   unfollowUser,
   logoutUser,
+  likePost,
+  getLikes,
+  dislikePost,
 };

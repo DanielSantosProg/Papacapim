@@ -60,7 +60,9 @@ const Feed = ({ navigation }) => {
         {posts.length > 0
           ? posts.map((post, index) => (
               <Post
+                post={post}
                 key={index}
+                id={post.id}
                 user={post.user_login}
                 navigation={navigation}
                 message={post.message}
