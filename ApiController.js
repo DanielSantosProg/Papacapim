@@ -285,6 +285,19 @@ const getLikes = async (id) => {
   }
 };
 
+const newPost = async (post) => {
+  try {
+    const response = await requestUsingToken(`/posts`, "post", post);
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao criar o post:",
+      error.response ? error.response.data : error.message
+    );
+    throw error;
+  }
+};
+
 module.exports = {
   getToken,
   requestUsingToken,
@@ -305,4 +318,5 @@ module.exports = {
   likePost,
   getLikes,
   dislikePost,
+  newPost,
 };

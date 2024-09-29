@@ -9,9 +9,33 @@ import {
 } from "react-native";
 import Footer from "../components/footer";
 import ProfileHeader from "../components/profileHeader";
+import { newPost } from "../ApiController";
 
 const Post = ({ navigation }) => {
-  const [text, setText] = useState("");
+  const [message, setMessage] = useState(null);
+
+  const handlePost = async () => {
+    try {
+      if (message) {
+        const post = {
+          message: message,
+        };
+        const response = await newPost(post);
+        if (response) {
+          console.log("Post feito com sucesso: ", response);
+          navigation.pop();
+        }
+      } else {
+        Alert.alert("Digite uma mensagem antes de postar.");
+        console.log("Digite uma mensagem antes de postar.");
+      }
+    } catch (error) {
+      Alert.alert(
+        "Erro",
+        "Não foi possível fazer o post, tente novamente mais tarde."
+      );
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -28,15 +52,12 @@ const Post = ({ navigation }) => {
           placeholderTextColor="#ccc"
           multiline
           numberOfLines={4}
-          onChangeText={setText}
-          value={text}
+          onChangeText={setMessage}
+          value={message}
         />
       </View>
 
-      <TouchableOpacity
-        style={styles.postButton}
-        onPress={() => navigation.navigate("Feed")}
-      >
+      <TouchableOpacity style={styles.postButton} onPress={() => handlePost()}>
         <Text style={styles.postButtonText}>Postar</Text>
       </TouchableOpacity>
 
