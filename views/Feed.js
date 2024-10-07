@@ -1,5 +1,6 @@
 import {
   ScrollView,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -9,12 +10,13 @@ import Header from "../components/header";
 import Tabs from "../components/tabs";
 import Footer from "../components/footer";
 import Post from "../components/post";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getPosts } from "../ApiController";
 
 const Feed = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   const getAllPosts = async () => {
     try {
@@ -44,6 +46,14 @@ const Feed = ({ navigation }) => {
     }
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getAllPosts();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
   useEffect(() => {
     getAllPosts();
   }, []);
@@ -56,7 +66,12 @@ const Feed = ({ navigation }) => {
           <Text style={styles.texto}>{errorMessage}</Text>
         </View>
       ) : null}
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {posts.length > 0
           ? posts.map((post, index) => (
               <Post
