@@ -78,7 +78,11 @@ const Post = (props) => {
         <TouchableOpacity
           onPress={() => {
             console.log("Post User: ", props.user);
-            props.navigation.navigate("UserProfile", { user: props.user });
+            if (props.user == currentLogin) {
+              props.navigation.navigate("Profile");
+            } else {
+              props.navigation.navigate("UserProfile", { user: props.user });
+            }
           }}
         >
           <Image
