@@ -2,14 +2,21 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-const Tabs = () => {
+const Tabs = ({ onTabChange }) => {
   const [selectedTab, setSelectedTab] = useState("For You");
+
+  const handleTabPress = (tab) => {
+    setSelectedTab(tab);
+    onTabChange(tab);
+  };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.tab, selectedTab === "For You" && styles.selectedTab]}
-        onPress={() => setSelectedTab("For You")}
+        onPress={() => {
+          handleTabPress("For You");
+        }}
       >
         <Text
           style={[
@@ -22,7 +29,9 @@ const Tabs = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.tab, selectedTab === "Following" && styles.selectedTab]}
-        onPress={() => setSelectedTab("Following")}
+        onPress={() => {
+          handleTabPress("Following");
+        }}
       >
         <Text
           style={[

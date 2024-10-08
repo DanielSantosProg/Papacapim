@@ -11,17 +11,24 @@ import Tabs from "../components/tabs";
 import Footer from "../components/footer";
 import Post from "../components/post";
 import { useEffect, useState, useCallback } from "react";
-import { getPosts } from "../ApiController";
+import { getPosts, getFollowedPosts } from "../ApiController";
 
 const Feed = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const [followedPosts, setFollowedPosts] = useState(false);
 
   const getAllPosts = async () => {
     try {
       setErrorMessage(""); // Limpa mensagem de erro antes de cada busca
-      const response = await getPosts();
+      let response;
+
+      if (followedPosts) {
+        response = await getFollowedPosts();
+      } else {
+        response = await getPosts();
+      }
 
       // Se a resposta for uma lista vazia ou um objeto indefinido
       if (!response || (Array.isArray(response) && response.length === 0)) {
@@ -56,11 +63,20 @@ const Feed = ({ navigation }) => {
 
   useEffect(() => {
     getAllPosts();
-  }, []);
+  }, [followedPosts]);
+
+  const handleTabChange = (selectedTab) => {
+    if (selectedTab == "For You") {
+      setFollowedPosts(false);
+    } else {
+      setFollowedPosts(true);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
-      <Tabs />
+      <Tabs onTabChange={handleTabChange} />
       {errorMessage ? (
         <View style={styles.sectionContent}>
           <Text style={styles.texto}>{errorMessage}</Text>

@@ -12,21 +12,25 @@ import { AuthContext } from "../context/auth";
 import ProfileHeader from "../components/profileHeader";
 import ProfileTabs from "../components/profileTabs";
 import Footer from "../components/footer";
+import Post from "../components/post";
 import {
   getUser,
   followUser,
   unfollowUser,
   getFollowers,
+  getUserPosts,
 } from "../ApiController";
 
 const UserProfile = ({ route, navigation }) => {
-  const { currentName, currentLogin } = useContext(AuthContext);
+  const { currentLogin } = useContext(AuthContext);
   const { user } = route.params;
   const [name, setName] = useState("");
   const [login, setLogin] = useState(user);
   const [isFollowingUser, setIsFollowingUser] = useState(false);
   const [followerLogins, setFollowerLogins] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const getUserData = async () => {
     try {
@@ -79,10 +83,40 @@ const UserProfile = ({ route, navigation }) => {
     }
   };
 
+  const findPosts = async () => {
+    try {
+      setErrorMessage(""); // Limpa mensagem de erro antes de cada busca
+
+      const response = await getUserPosts(login);
+
+      // Se a resposta for uma lista vazia ou um objeto indefinido
+      if (!response || (Array.isArray(response) && response.length === 0)) {
+        setErrorMessage("Posts não encontrados.");
+        setPosts([]); // Limpa a lista de usuários
+      } else {
+        // Garante que o resultado é um array
+        const postsArray = Array.isArray(response) ? response : [response];
+        setPosts(postsArray);
+      }
+    } catch (error) {
+      // Se a API retornar um 404, exibe uma mensagem de usuário não encontrado
+      if (error.response && error.response.status === 404) {
+        setErrorMessage("Posts não encontrados.");
+      } else {
+        // Exibe outras mensagens de erro genérico
+        setErrorMessage(
+          error.response ? error.response.data : "Erro ao buscar posts."
+        );
+      }
+      setPosts([]); // Limpa a lista de usuários no caso de erro
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await getUserData();
       await findFollowers();
+      await findPosts();
       setLoading(false);
     };
 
@@ -143,8 +177,24 @@ const UserProfile = ({ route, navigation }) => {
         </Text>
       </View>
       <ProfileTabs />
+      {errorMessage ? (
+        <View style={styles.sectionContent}>
+          <Text style={styles.texto}>{errorMessage}</Text>
+        </View>
+      ) : null}
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View style={styles.content}></View>
+        {posts.length > 0
+          ? posts.map((post, index) => (
+              <Post
+                post={post}
+                key={index}
+                id={post.id}
+                user={post.user_login}
+                navigation={navigation}
+                message={post.message}
+              />
+            ))
+          : null}
       </ScrollView>
       <Footer navigation={navigation} />
     </View>

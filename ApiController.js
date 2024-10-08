@@ -141,13 +141,37 @@ const searchUser = async (user) => {
   }
 };
 
-const getPosts = async (user) => {
+const getPosts = async () => {
   try {
     const response = await requestUsingToken("/posts");
     return response;
   } catch (error) {
     console.error(
-      "Erro ao procurar usuários:",
+      "Erro ao procurar posts:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
+const getFollowedPosts = async () => {
+  try {
+    const response = await requestUsingToken("/posts/1");
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar posts:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
+const getUserPosts = async (login) => {
+  try {
+    const response = await requestUsingToken(`/users/${login}/posts`);
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar posts:",
       error.response ? error.response.data : error.message
     );
   }
@@ -309,6 +333,8 @@ module.exports = {
   deleteUser,
   searchUser,
   getPosts,
+  getFollowedPosts,
+  getUserPosts,
   getPost,
   getUser,
   followUser,

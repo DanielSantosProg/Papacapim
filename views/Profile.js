@@ -6,34 +6,52 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/auth";
 import ProfileHeader from "../components/profileHeader";
 import ProfileTabs from "../components/profileTabs";
 import Footer from "../components/footer";
-import { getCurrentUser, getFollowers } from "../ApiController";
+import Post from "../components/post";
+import { getCurrentUser, getUserPosts } from "../ApiController";
 
 const Profile = ({ navigation }) => {
-  const [username, setUsername] = useState("");
-  const [login, setLogin] = useState("");
+  const { currentName, currentLogin } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const getUser = async () => {
+  const findPosts = async () => {
     try {
-      const user = await getCurrentUser();
-      console.log("Usuário: ", user);
-      setUsername(user.name);
-      setLogin(user.login);
+      setErrorMessage(""); // Limpa mensagem de erro antes de cada busca
+
+      const response = await getUserPosts(currentLogin);
+
+      // Se a resposta for uma lista vazia ou um objeto indefinido
+      if (!response || (Array.isArray(response) && response.length === 0)) {
+        setErrorMessage("Posts não encontrados.");
+        setPosts([]); // Limpa a lista de posts
+      } else {
+        // Garante que o resultado é um array
+        const postsArray = Array.isArray(response) ? response : [response];
+        setPosts(postsArray);
+      }
     } catch (error) {
-      console.log(
-        "Usuário não encontrado: ",
-        error.response ? error.response.data : error.message
-      );
+      // Se a API retornar um 404, exibe uma mensagem de posts não encontrados
+      if (error.response && error.response.status === 404) {
+        setErrorMessage("Posts não encontrados.");
+      } else {
+        // Exibe outras mensagens de erro genérico
+        setErrorMessage(
+          error.response ? error.response.data : "Erro ao buscar posts."
+        );
+      }
+      setPosts([]); // Limpa a lista de posts no caso de erro
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      await getUser();
+      await findPosts();
       setLoading(false);
     };
 
@@ -62,16 +80,32 @@ const Profile = ({ navigation }) => {
         />
       </View>
       <View style={styles.userText}>
-        <Text style={styles.textoBold}>{username}</Text>
-        <Text style={styles.texto}>@{login}</Text>
+        <Text style={styles.textoBold}>{currentName}</Text>
+        <Text style={styles.texto}>@{currentLogin}</Text>
         <Text style={[styles.texto, styles.description]}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
           vel.
         </Text>
       </View>
       <ProfileTabs />
+      {errorMessage ? (
+        <View style={styles.sectionContent}>
+          <Text style={styles.texto}>{errorMessage}</Text>
+        </View>
+      ) : null}
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <View style={styles.content}></View>
+        {posts.length > 0
+          ? posts.map((post, index) => (
+              <Post
+                post={post}
+                key={index}
+                id={post.id}
+                user={post.user_login}
+                navigation={navigation}
+                message={post.message}
+              />
+            ))
+          : null}
       </ScrollView>
       <Footer navigation={navigation} />
     </View>
