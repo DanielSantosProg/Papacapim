@@ -30,7 +30,6 @@ const requestUsingToken = async (url, method = "get", data = null) => {
 
     if (token) {
       config.headers["x-session-token"] = token;
-      console.log("Token enviado:", token);
     }
 
     if (data && (method === "post" || method === "put" || method === "patch")) {
@@ -148,6 +147,30 @@ const searchPost = async (message) => {
   } catch (error) {
     console.error(
       "Erro ao procurar post:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
+const deletePost = async (id) => {
+  try {
+    const response = await requestUsingToken(`/posts/${id}`, "delete");
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar post:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
+const replyPost = async (id) => {
+  try {
+    const response = await requestUsingToken(`/posts/${id}/replies`, "post");
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao responder ao post:",
       error.response ? error.response.data : error.message
     );
   }
@@ -345,6 +368,8 @@ module.exports = {
   deleteUser,
   searchUser,
   searchPost,
+  deletePost,
+  replyPost,
   getPosts,
   getFollowedPosts,
   getUserPosts,

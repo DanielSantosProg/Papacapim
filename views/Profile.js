@@ -12,7 +12,7 @@ import ProfileHeader from "../components/profileHeader";
 import ProfileTabs from "../components/profileTabs";
 import Footer from "../components/footer";
 import Post from "../components/post";
-import { getCurrentUser, getUserPosts } from "../ApiController";
+import { getUserPosts, deletePost } from "../ApiController";
 
 const Profile = ({ navigation }) => {
   const { currentName, currentLogin } = useContext(AuthContext);
@@ -46,6 +46,18 @@ const Profile = ({ navigation }) => {
         );
       }
       setPosts([]); // Limpa a lista de posts no caso de erro
+    }
+  };
+
+  const onDeletePost = async (postId) => {
+    try {
+      // Atualiza a lista de posts removendo o post excluído
+      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+    } catch (error) {
+      console.log(
+        "Erro ao excluir o post: ",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
@@ -103,6 +115,7 @@ const Profile = ({ navigation }) => {
                 user={post.user_login}
                 navigation={navigation}
                 message={post.message}
+                onDeletePost={onDeletePost}
               />
             ))
           : null}

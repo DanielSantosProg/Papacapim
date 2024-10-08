@@ -92,14 +92,14 @@ const UserProfile = ({ route, navigation }) => {
       // Se a resposta for uma lista vazia ou um objeto indefinido
       if (!response || (Array.isArray(response) && response.length === 0)) {
         setErrorMessage("Posts não encontrados.");
-        setPosts([]); // Limpa a lista de usuários
+        setPosts([]); // Limpa a lista de posts
       } else {
         // Garante que o resultado é um array
         const postsArray = Array.isArray(response) ? response : [response];
         setPosts(postsArray);
       }
     } catch (error) {
-      // Se a API retornar um 404, exibe uma mensagem de usuário não encontrado
+      // Se a API retornar um 404, exibe uma mensagem de posts não encontrados
       if (error.response && error.response.status === 404) {
         setErrorMessage("Posts não encontrados.");
       } else {
@@ -108,7 +108,7 @@ const UserProfile = ({ route, navigation }) => {
           error.response ? error.response.data : "Erro ao buscar posts."
         );
       }
-      setPosts([]); // Limpa a lista de usuários no caso de erro
+      setPosts([]); // Limpa a lista de posts no caso de erro
     }
   };
 

@@ -61,9 +61,17 @@ const Feed = ({ navigation }) => {
     }, 2000);
   }, []);
 
-  useEffect(() => {
-    getAllPosts();
-  }, [followedPosts]);
+  const onDeletePost = async (postId) => {
+    try {
+      // Atualiza a lista de posts removendo o post excluído
+      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+    } catch (error) {
+      console.log(
+        "Erro ao excluir o post: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   const handleTabChange = (selectedTab) => {
     if (selectedTab == "For You") {
@@ -72,6 +80,10 @@ const Feed = ({ navigation }) => {
       setFollowedPosts(true);
     }
   };
+
+  useEffect(() => {
+    getAllPosts();
+  }, [followedPosts]);
 
   return (
     <View style={styles.container}>
@@ -97,6 +109,7 @@ const Feed = ({ navigation }) => {
                 user={post.user_login}
                 navigation={navigation}
                 message={post.message}
+                onDeletePost={onDeletePost}
               />
             ))
           : null}
