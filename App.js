@@ -76,7 +76,7 @@ export default function App() {
           <Stack.Screen
             name="Search"
             component={Search}
-            options={{ title: "Busca" }}
+            options={{ title: "Busca", headerShown: false }}
           />
         </Stack.Navigator>
       </AuthProvider>

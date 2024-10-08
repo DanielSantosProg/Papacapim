@@ -11,45 +11,71 @@ import { useState, useEffect } from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import User from "../components/user";
-import { searchUser } from "../ApiController";
+import Post from "../components/post";
+import { searchUser, searchPost } from "../ApiController";
 
 const Search = ({ navigation }) => {
   const [users, setUsers] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [searchedUser, setSearchedUser] = useState("");
+  const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [searchType, setSearchType] = useState("User");
 
-  const searchUsers = async () => {
+  const search = async () => {
     try {
       setErrorMessage(""); // Limpa mensagem de erro antes de cada busca
-      const response = await searchUser(searchedUser);
+      let response;
+
+      if (searchType === "User") {
+        response = await searchUser(searchedUser);
+      } else {
+        response = await searchPost(message);
+      }
 
       // Se a resposta for uma lista vazia ou um objeto indefinido
       if (!response || (Array.isArray(response) && response.length === 0)) {
-        setErrorMessage("Usuário não encontrado.");
-        setUsers([]); // Limpa a lista de usuários
+        setErrorMessage(
+          searchType === "User"
+            ? "Usuário não encontrado."
+            : "Post não encontrado."
+        );
+        setUsers([]);
+        setPosts([]);
       } else {
         // Garante que o resultado é um array
-        const users = Array.isArray(response) ? response : [response];
-        setUsers(users);
+        if (searchType === "User") {
+          const users = Array.isArray(response) ? response : [response];
+          setUsers(users);
+          setPosts([]);
+        } else {
+          const posts = Array.isArray(response) ? response : [response];
+          setPosts(posts);
+          setUsers([]);
+        }
       }
     } catch (error) {
       // Se a API retornar um 404, exibe uma mensagem de usuário não encontrado
       if (error.response && error.response.status === 404) {
-        setErrorMessage("Usuário não encontrado.");
-      } else {
-        // Exibe outras mensagens de erro genérico
         setErrorMessage(
-          error.response ? error.response.data : "Erro ao buscar usuários."
+          searchType === "User"
+            ? "Usuário não encontrado."
+            : "Post não encontrado."
+        );
+      } else {
+        setErrorMessage(
+          error.response ? error.response.data : "Erro ao buscar."
         );
       }
-      setUsers([]); // Limpa a lista de usuários no caso de erro
+      setUsers([]); // Limpa a lista no caso de erro
+      setPosts([]); // Limpa a lista no caso de erro
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      await searchUsers();
+      await search();
       setLoading(false);
     };
 
@@ -68,37 +94,90 @@ const Search = ({ navigation }) => {
     <View style={styles.container}>
       <Header navigation={navigation} />
       <View style={styles.sectionContent}>
-        <Text style={styles.label}>Digite o nome desejado:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Nome de usuário"
-          placeholderTextColor="#ccc"
-          value={searchedUser}
-          onChangeText={setSearchedUser}
-        />
-        <TouchableOpacity style={styles.searchButton} onPress={searchUsers}>
+        <Text style={styles.label}>Selecione o tipo de busca:</Text>
+        <View style={styles.radioButtonContainer}>
+          <TouchableOpacity
+            style={styles.radioButton}
+            onPress={() => setSearchType("User")}
+          >
+            <Text style={styles.radioButtonText}>
+              {searchType === "User" ? "●" : "○"} Usuário
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.radioButton}
+            onPress={() => setSearchType("Post")}
+          >
+            <Text style={styles.radioButtonText}>
+              {searchType === "Post" ? "●" : "○"} Post
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {searchType === "User" ? (
+          <>
+            <Text style={styles.label}>Digite o nome desejado:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Nome de usuário"
+              placeholderTextColor="#ccc"
+              value={searchedUser}
+              onChangeText={setSearchedUser}
+            />
+          </>
+        ) : (
+          <>
+            <Text style={styles.label}>Digite o conteúdo do post:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Conteúdo do post"
+              placeholderTextColor="#ccc"
+              value={message}
+              onChangeText={setMessage}
+            />
+          </>
+        )}
+
+        <TouchableOpacity style={styles.searchButton} onPress={search}>
           <Text style={styles.searchButtonText}>Pesquisar</Text>
         </TouchableOpacity>
       </View>
 
-      {errorMessage ? (
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#76ABAE" />
+        </View>
+      ) : errorMessage ? (
         <View style={styles.sectionContent}>
           <Text style={styles.texto}>{errorMessage}</Text>
         </View>
-      ) : null}
+      ) : (
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          {searchType === "User" && users.length > 0
+            ? users.map((user, index) => (
+                <User
+                  key={index}
+                  username={user.name}
+                  login={user.login}
+                  navigation={navigation}
+                />
+              ))
+            : null}
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        {users.length > 0
-          ? users.map((user, index) => (
-              <User
-                key={index}
-                username={user.name}
-                login={user.login}
-                navigation={navigation}
-              />
-            ))
-          : null}
-      </ScrollView>
+          {searchType === "Post" && posts.length > 0
+            ? posts.map((post, index) => (
+                <Post
+                  post={post}
+                  key={index}
+                  id={post.id}
+                  user={post.user_login}
+                  navigation={navigation}
+                  message={post.message}
+                />
+              ))
+            : null}
+        </ScrollView>
+      )}
 
       <TouchableOpacity
         style={styles.postButton}
@@ -198,6 +277,17 @@ const styles = StyleSheet.create({
     fontFamily: "Kameron-Regular",
     color: "#ccc",
     marginBottom: 5,
+  },
+  radioButtonContainer: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  radioButton: {
+    marginHorizontal: 10,
+  },
+  radioButtonText: {
+    color: "#FFF",
+    fontSize: 18,
   },
 });
 
