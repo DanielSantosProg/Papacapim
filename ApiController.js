@@ -164,9 +164,13 @@ const deletePost = async (id) => {
   }
 };
 
-const replyPost = async (id) => {
+const replyPost = async (id, replyText) => {
   try {
-    const response = await requestUsingToken(`/posts/${id}/replies`, "post");
+    const response = await requestUsingToken(`/posts/${id}/replies`, "post", {
+      reply: {
+        message: replyText,
+      },
+    });
     return response;
   } catch (error) {
     console.error(
@@ -176,6 +180,7 @@ const replyPost = async (id) => {
   }
 };
 
+
 const getPosts = async () => {
   try {
     const response = await requestUsingToken("/posts");
@@ -183,6 +188,18 @@ const getPosts = async () => {
   } catch (error) {
     console.error(
       "Erro ao procurar posts:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
+const getReplies = async (id) => {
+  try {
+    const response = await requestUsingToken(`/posts/${id}/replies`);
+    return response;
+  } catch (error) {
+    console.error(
+      "Erro ao procurar respostas do post:",
       error.response ? error.response.data : error.message
     );
   }
@@ -374,6 +391,7 @@ module.exports = {
   getFollowedPosts,
   getUserPosts,
   getPost,
+  getReplies,
   getUser,
   followUser,
   getFollowers,

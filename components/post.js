@@ -7,7 +7,15 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useState, useEffect, useContext } from "react";
-import { likePost, getLikes, dislikePost, deletePost } from "../ApiController"; // Assumindo que deletePost é importado
+import {
+  likePost,
+  getLikes,
+  dislikePost,
+  deletePost,
+  replyPost,
+  getReplies,
+} from "../ApiController";
+import Reply from "./reply";
 import { AuthContext } from "../context/auth";
 
 const Post = (props) => {
@@ -15,7 +23,26 @@ const Post = (props) => {
   const [isLiked, setIsLiked] = useState(false);
   const [numberOfLikes, setNumberOfLikes] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isReplyVisible, setIsReplyVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [replies, setReplies] = useState([]);
+  const [replyUpdated, setReplyUpdated] = useState(false); // Estado para monitorar mudanças nas replies
   const currentUserPost = currentLogin === props.user;
+
+  const handleReply = async (replyText) => {
+    try {
+      const response = await replyPost(props.id, replyText);
+      console.log(response);
+
+      // Atualiza o estado para disparar nova busca de replies
+      setReplyUpdated((prev) => !prev);
+    } catch (error) {
+      console.log(
+        "Erro ao responder o post: ",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   const handleLike = async () => {
     setLoading(true);
@@ -61,6 +88,28 @@ const Post = (props) => {
     }
   };
 
+  const findReplies = async () => {
+    try {
+      setErrorMessage("");
+      const response = await getReplies(props.id);
+
+      if (!response || (Array.isArray(response) && response.length === 0)) {
+        setErrorMessage("Respostas não encontradas.");
+        setReplies([]); // Limpa a lista de respostas
+      } else {
+        // Garante que o resultado é um array
+        const repliesArray = Array.isArray(response) ? response : [response];
+        setReplies(repliesArray);
+      }
+    } catch (error) {
+      console.log(
+        "Erro ao buscar as respostas: ",
+        error.response ? error.response.data : error.message
+      );
+      setReplies([]); // Limpa a lista de respostas
+    }
+  };
+
   const getPostLikes = async () => {
     try {
       const response = await getLikes(props.id);
@@ -79,7 +128,8 @@ const Post = (props) => {
 
   useEffect(() => {
     getPostLikes();
-  }, [isLiked]);
+    findReplies();
+  }, [isLiked, props.id, replyUpdated]); // Inclui replyUpdated no useEffect para atualizar replies
 
   return (
     <View style={styles.container}>
@@ -117,12 +167,18 @@ const Post = (props) => {
           )}
         </TouchableOpacity>
         <Text style={styles.likeText}>{numberOfLikes}</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setIsReplyVisible(true)}>
           <Image
             source={require("../assets/imgs/replies.png")}
             style={styles.icons}
           />
         </TouchableOpacity>
+        <Reply
+          isVisible={isReplyVisible}
+          onClose={() => setIsReplyVisible(false)}
+          onReply={handleReply}
+          replies={replies}
+        />
 
         {currentUserPost && (
           <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
